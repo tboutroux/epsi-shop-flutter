@@ -1,4 +1,4 @@
-import 'package:epsi_shop/bo/product.dart';
+import 'package:epsi_shop/ui/pages/cart.dart';
 import 'package:epsi_shop/ui/pages/detail_page.dart';
 import 'package:epsi_shop/ui/pages/list_product_page.dart';
 import 'package:flutter/material.dart';
@@ -13,8 +13,13 @@ class MyApp extends StatelessWidget {
           path: "detail/:idProduct",
           builder: (_, state) {
             int idProduct = int.parse(state.pathParameters["idProduct"] ?? "0");
-            return DetailPage(idProduct: idProduct);;
+            return DetailPage(idProduct: idProduct);
           }),
+      GoRoute(
+        name: "cart", 
+        path: "cart",
+        builder: (_, __) => const CartPage(),
+      ),
     ]),
   ]);
 

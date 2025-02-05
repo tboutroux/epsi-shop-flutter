@@ -1,9 +1,11 @@
 import 'dart:convert';
 
 import 'package:epsi_shop/bo/product.dart';
+import 'package:epsi_shop/ui/pages/cart.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:http/http.dart';
+import 'package:provider/provider.dart';
 
 class ListProductPage extends StatelessWidget {
   ListProductPage({super.key});
@@ -25,7 +27,17 @@ class ListProductPage extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: Text('appbarTitle'),
+          title: const Text('EPSI Shop'),
+          actions: [
+            IconButton(
+              onPressed: () => context.go("/cart"),
+              icon: Badge(
+              label:
+                Text(context.watch<Cart>().getAll().length.toString()),
+                child: const Icon(Icons.shopping_cart),
+              ),
+            )
+          ],
         ),
         body: FutureBuilder<List<Product>>(
             future: getProducts(),
@@ -56,7 +68,6 @@ class ListViewProducts extends StatelessWidget {
       itemCount: listProducts.length,
       itemBuilder: (ctx, index) => InkWell(
         onTap: () => ctx.go("/detail/${listProducts[index].id}"),
-        // /detail/4
         child: ListTile(
           leading: Image.network(
             listProducts[index].image,
@@ -65,8 +76,19 @@ class ListViewProducts extends StatelessWidget {
           ),
           title: Text(listProducts[index].title),
           subtitle: Text(listProducts[index].getPrice()),
+          trailing: IconButton(
+            icon: const Icon(Icons.add_shopping_cart),
+            onPressed: () {
+              context.read<Cart>().add(listProducts[index]);
+              ScaffoldMessenger.of(ctx).showSnackBar(
+                SnackBar(
+                  content: Text("${listProducts[index].title} ajouté au panier"),
+                ),
+              );
+            },
+          ),
         ),
-      )
+      ),
     );
   }
 }

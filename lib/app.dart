@@ -13,8 +13,7 @@ class MyApp extends StatelessWidget {
           path: "detail/:idProduct",
           builder: (_, state) {
             int idProduct = int.parse(state.pathParameters["idProduct"] ?? "0");
-            return DetailPage(
-                listProducts.firstWhere((p) => p.id == idProduct));
+            return DetailPage(idProduct: idProduct);;
           }),
     ]),
   ]);

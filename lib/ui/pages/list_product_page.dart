@@ -53,19 +53,20 @@ class ListViewProducts extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-        itemCount: listProducts.length,
-        itemBuilder: (ctx, index) => InkWell(
-              onTap: () => ctx.go("/detail/${listProducts[index].id}"),
-              // /detail/4
-              child: ListTile(
-                leading: Image.network(
-                  listProducts[index].image,
-                  width: 90,
-                  height: 90,
-                ),
-                title: Text(listProducts[index].title),
-                subtitle: Text(listProducts[index].getPrice()),
-              ),
-            ));
+      itemCount: listProducts.length,
+      itemBuilder: (ctx, index) => InkWell(
+        onTap: () => ctx.go("/detail/${listProducts[index].id}"),
+        // /detail/4
+        child: ListTile(
+          leading: Image.network(
+            listProducts[index].image,
+            width: 90,
+            height: 90,
+          ),
+          title: Text(listProducts[index].title),
+          subtitle: Text(listProducts[index].getPrice()),
+        ),
+      )
+    );
   }
 }

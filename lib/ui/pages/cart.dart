@@ -27,7 +27,7 @@ class Cart extends ChangeNotifier {
   String getTotalPrice() {
     double total = _items.fold(0, (sum, product) => sum + product.price);
     total = total * 1.2; // TVA
-    return "\$${total.toStringAsFixed(2)}";
+    return "${total.toStringAsFixed(2)}€";
   }
 
   // Vider le panier

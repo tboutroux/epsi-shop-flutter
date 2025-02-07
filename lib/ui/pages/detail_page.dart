@@ -1,6 +1,9 @@
 import 'dart:convert';
 import 'package:epsi_shop/bo/product.dart';
+import 'package:epsi_shop/ui/pages/cart.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:go_router/go_router.dart';
 import 'package:http/http.dart' as http;
 
 class DetailPage extends StatelessWidget {
@@ -22,6 +25,16 @@ class DetailPage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text("Produit"),
+        actions: [
+            IconButton(
+              onPressed: () => context.go("/cart"),
+              icon: Badge(
+              label:
+                Text(context.watch<Cart>().getAll().length.toString()),
+                child: const Icon(Icons.shopping_cart),
+              ),
+            )
+          ],
       ),
       body: FutureBuilder<Product>(
         future: getProductDetail(),
@@ -35,16 +48,16 @@ class DetailPage extends StatelessWidget {
           } else {
             final product = snapshot.data!;
             return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Image.network(
                   product.image,
-                  height: 150,
+                  height: 250,
                 ),
                 TitleLinePrice(product: product),
                 Description(product: product),
                 Spacer(),
-                ButtonReserverEssai()
+                ButtonReserverEssai(product: product)
               ],
             );
           }
@@ -86,8 +99,9 @@ class TitleLinePrice extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(12),
-      child: Row(
+      child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             product.title,
@@ -95,18 +109,24 @@ class TitleLinePrice extends StatelessWidget {
           ),
           Text(
             product.getPrice(),
-            style: Theme.of(context).textTheme.bodyLarge,
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+              color: Theme.of(context).colorScheme.secondary,
+              fontSize: 20,
+            ),
+            
           )
         ],
       ),
     );
   }
 }
-
 class ButtonReserverEssai extends StatelessWidget {
   const ButtonReserverEssai({
     super.key,
+    required this.product,
   });
+
+  final Product product;
 
   @override
   Widget build(BuildContext context) {
@@ -114,8 +134,26 @@ class ButtonReserverEssai extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: Container(
         width: MediaQuery.of(context).size.width,
-        child:
-            ElevatedButton(onPressed: () {}, child: Text("Réserver un essai")),
+        child: Consumer<Cart>(
+          builder: (context, cart, child) {
+            return ElevatedButton.icon(
+              onPressed: () {
+                context.read<Cart>().add(product);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text("${product.title} ajouté au panier"),
+                  ),
+                );
+              },
+              icon: Icon(Icons.add_shopping_cart),
+              label: Text("Ajouter au panier"),
+              style: ElevatedButton.styleFrom(
+                padding: EdgeInsets.symmetric(vertical: 12),
+                textStyle: TextStyle(fontSize: 16),
+              ),
+            );
+          },
+        ),
       ),
     );
   }

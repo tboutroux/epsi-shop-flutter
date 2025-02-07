@@ -43,7 +43,7 @@ class ListProductPage extends StatelessWidget {
             future: getProducts(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return CircularProgressIndicator();
+                return Center(child: CircularProgressIndicator());
               } else if (snapshot.hasData) {
                 final listProducts = snapshot.data!;
                 return ListViewProducts(listProducts: listProducts);
